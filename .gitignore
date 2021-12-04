@@ -1,0 +1,11 @@
+include/*
+lib/*
+boost_1_42/*
+media/*
+programs/*
+!programs/mass_spring_system
+programs/mass_spring_system/*
+!programs/mass_spring_system/source
+programs/mass_spring_system/source/*
+!programs/mass_spring_system/source/*.cpp
+!programs/mass_spring_system/source/*.h
