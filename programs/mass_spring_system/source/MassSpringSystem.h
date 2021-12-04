@@ -18,7 +18,7 @@ public:
         velocity = Vector3::ZERO;
         mass = 1.0;
         movable = true;
-        radius = 1.0;
+        radius = 5.0;
         
     }
     SceneNode *snode;

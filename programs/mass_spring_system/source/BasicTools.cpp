@@ -9,8 +9,18 @@ void resolveCollision(
     SceneNode *nodeA, SceneNode *nodeB,
     float rA, float rB, float wA, float wB)
 {
-    //Vector3 posA = nodeA->getPosition();
-    //Vector3 posB = nodeB->getPosition();
-    //float R = rA + rB;
-
+    Vector3 posA = nodeA->getPosition();
+    Vector3 posB = nodeB->getPosition();
+    float R = rA + rB;
+    
+	Vector3 diff = posB - posA;
+	Real length = diff.length();
+	if (length < R) {
+		diff.normalise();
+		String name = nodeA->getName();
+		/*if (name != "big_sphere") {
+			nodeA->translate(-diff * ceil(R / length / 2));
+		}*/
+		nodeB->translate(diff * ceil(R / length / 2));
+	}
 }

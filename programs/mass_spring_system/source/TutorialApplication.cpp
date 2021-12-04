@@ -71,7 +71,15 @@ void BasicTutorial_00::createViewport_01(void)
 
 void BasicTutorial_00::setMassSpringSystem()
 {
-
+	for (int i = 0; i < m_NumSamples * m_NumCircles; i++) {
+		if (i >= m_NumSamples) {
+			m_MassSpringSystem->addSpring(i, i - m_NumSamples);
+		}
+		if (i >= 2 * m_NumSamples) {
+			m_MassSpringSystem->addSpring(i, i - 2 * m_NumSamples);
+		}
+		m_MassSpringSystem->addParticle(mSceneNode[i], mSmallSphereRadius, true);
+	}
 }
 
 void BasicTutorial_00::setObjPositions(

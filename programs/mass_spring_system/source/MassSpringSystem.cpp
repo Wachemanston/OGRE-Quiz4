@@ -25,13 +25,19 @@ void MASS_SPRING_SYSTEM::init(
 
 int MASS_SPRING_SYSTEM::addParticle(SceneNode *n, Real radius, bool movable)
 {
+	mParticles[m_CurParticles].snode = n;
+	mParticles[m_CurParticles].radius = radius;
+	mParticles[m_CurParticles].movable = movable;
+	m_CurParticles++;
     return 0;
-    
 }
 
 SPRING *MASS_SPRING_SYSTEM::addSpring(
     int n0, int n1)
 {
+	mSprings[m_CurSprings].n0 = n0;
+	mSprings[m_CurSprings].n1 = n1;
+	m_CurSprings++;
     SPRING *s = 0;
     return s;
 }
@@ -57,10 +63,18 @@ void MASS_SPRING_SYSTEM::computeForce(float time_step)
 
 void MASS_SPRING_SYSTEM::computeVelocity(float time_step)
 {
+    for (int i = 0; i < m_CurParticles; ++i ) {
+        mParticles[i].velocity += (mParticles[i].f / mParticles[i].mass) * time_step;
+    }
 }
 
 void MASS_SPRING_SYSTEM::computePosition(float time_step)
 {
+    for (int i = 0; i < m_CurParticles; ++i ) {
+		Vector3 pos = mParticles[i].snode->getPosition();
+		Vector3 vec = mParticles[i].velocity;
+		mParticles[i].snode->setPosition(pos.x + vec.x * time_step, pos.y + vec.y * time_step, pos.z + vec.z * time_step);
+    }
 }
 
 void MASS_SPRING_SYSTEM::adjustVelocityDueToCollisionConstraint_Floor(float time_step)
