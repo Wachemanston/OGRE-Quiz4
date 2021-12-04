@@ -18,9 +18,9 @@ void resolveCollision(
 	if (length < R) {
 		diff.normalise();
 		String name = nodeA->getName();
-		/*if (name != "big_sphere") {
+		if (name != "big_sphere") {
 			nodeA->translate(-diff * ceil(R / length / 2));
-		}*/
+		}
 		nodeB->translate(diff * ceil(R / length / 2));
 	}
 }

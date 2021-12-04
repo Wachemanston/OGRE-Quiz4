@@ -274,9 +274,9 @@ void BasicTutorial_00::createScene_00(void)
     setMassSpringSystem(); 
     
     mLargeSphereEntity  = mSceneMgr
-		->createEntity( "large", "sphere.mesh" );
+		->createEntity( "big_sphere", "sphere.mesh" );
     mLargeSphereEntity->setMaterialName("Examples/yellow");
-    mLargeSphereSceneNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+    mLargeSphereSceneNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("big_sphere");
     
     mLargeSphereRadius = 100.0;
 

@@ -88,8 +88,8 @@ void MASS_SPRING_SYSTEM::computeForce(float time_step)
 		Vector3 vec = a - b;
 		vec.normalise();
 		
-		mParticles[spring.n1].f += spring.k * ((a - b).length() - spring.L0) * vec * time_step;
-		mParticles[spring.n0].f += spring.k * ((a - b).length() - spring.L0) * -vec * time_step;
+		mParticles[spring.n1].f += spring.k * (b.distance(a) - spring.L0) * vec * time_step;
+		mParticles[spring.n0].f += spring.k * (a.distance(b) - spring.L0) * -vec * time_step;
     }
 
 	// reset
@@ -119,8 +119,11 @@ void MASS_SPRING_SYSTEM::adjustVelocityDueToCollisionConstraint_Floor(float time
     float e = 0.05;
     for (int i = 0; i < m_CurParticles; ++i ) {
 		Vector3 pos = mParticles[i].snode->getPosition();
-		if (pos.y <= e) {
-			mParticles[i].velocity *= -1;
+		Vector3 vec = mParticles[i].velocity + (mParticles[i].f / mParticles[i].mass) * time_step;
+		pos +=  vec * time_step;
+		if (pos.y <= 5.0 + e) {
+			mParticles[i].snode->setPosition(pos.x, e, pos.z);
+			mParticles[i].velocity *= -0.5;
 		}
     }
 }
@@ -139,9 +142,13 @@ void MASS_SPRING_SYSTEM::adjustVelocityDueToCollisionConstraint_LargeSphere(floa
 		dir.normalise();
 		Vector3 vec = mParticles[i].velocity;
 		Real innerProduct = vec.dotProduct(dir);
-		if (dir.length() < R && innerProduct > 0) {
-			dir.normalise();
-			mParticles[i].velocity -= innerProduct * dir * time_step;
+		if (pos.length() < R) {
+			// std::cout << dir.length() << ", " << innerProduct << std::endl;
+			if (innerProduct > 0) {
+				mParticles[i].velocity -= innerProduct * dir;
+			} else if (innerProduct < 0) {
+				mParticles[i].velocity += innerProduct * dir;
+			}
 		}
 	}
 }
