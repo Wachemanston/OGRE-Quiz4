@@ -11,7 +11,7 @@ void resolveCollision(
 {
     Vector3 posA = nodeA->getPosition();
     Vector3 posB = nodeB->getPosition();
-    float R = rA + rB;
+    float R = rA + rB + 0.05;
     
 	Vector3 diff = posB - posA;
 	Real length = diff.length();

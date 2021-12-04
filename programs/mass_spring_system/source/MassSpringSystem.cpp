@@ -37,6 +37,10 @@ SPRING *MASS_SPRING_SYSTEM::addSpring(
 {
 	mSprings[m_CurSprings].n0 = n0;
 	mSprings[m_CurSprings].n1 = n1;
+	Vector3 a = mParticles[n0].snode->getPosition();
+	Vector3 b = mParticles[n1].snode->getPosition();
+	mSprings[m_CurSprings].L0 = (a - b).length();
+	mSprings[m_CurSprings].k = 500;
 	m_CurSprings++;
     SPRING *s = 0;
     return s;
@@ -55,15 +59,48 @@ void MASS_SPRING_SYSTEM::setGravity(const Vector3 &g)
 // compute net force
 void MASS_SPRING_SYSTEM::computeForce(float time_step)
 {
+	// gravaity
     for (int i = 0; i < m_CurParticles; ++i ) {
-        mParticles[i].f = Vector3::ZERO;
+		mParticles[i].f = (mParticles[i].mass * time_step * m_Gravity);
     }
 
+	// damping force 1
+    for (int i = 0; i < m_CurParticles; ++i ) {
+		mParticles[i].f -= 0.025 * mParticles[i].velocity;
+    }
+
+	// damping force 2
+    for (int i = 0; i < m_CurSprings; ++i ) {
+		SPRING spring = mSprings[i];
+		Vector3 a = mParticles[spring.n0].velocity;
+		Vector3 b = mParticles[spring.n1].velocity;
+		Vector3 vec = a - b;
+		
+		mParticles[spring.n1].f -= 0.15 * vec * time_step;
+		mParticles[spring.n0].f -= 0.15 * -vec * time_step;
+    }
+
+	// spring force
+    for (int i = 0; i < m_CurSprings; ++i ) {
+		SPRING spring = mSprings[i];
+		Vector3 a = mParticles[spring.n0].snode->getPosition();
+		Vector3 b = mParticles[spring.n1].snode->getPosition();
+		Vector3 vec = a - b;
+		vec.normalise();
+		
+		mParticles[spring.n1].f += spring.k * ((a - b).length() - spring.L0) * vec * time_step;
+		mParticles[spring.n0].f += spring.k * ((a - b).length() - spring.L0) * -vec * time_step;
+    }
+
+	// reset
+    for (int i = 0; i < 8; ++i ) {
+		mParticles[i].f = 0;
+    }
 }
 
 void MASS_SPRING_SYSTEM::computeVelocity(float time_step)
 {
-    for (int i = 0; i < m_CurParticles; ++i ) {
+    for (int i = 8; i < m_CurParticles; ++i ) {
         mParticles[i].velocity += (mParticles[i].f / mParticles[i].mass) * time_step;
     }
 }
@@ -80,7 +117,12 @@ void MASS_SPRING_SYSTEM::computePosition(float time_step)
 void MASS_SPRING_SYSTEM::adjustVelocityDueToCollisionConstraint_Floor(float time_step)
 {
     float e = 0.05;
-
+    for (int i = 0; i < m_CurParticles; ++i ) {
+		Vector3 pos = mParticles[i].snode->getPosition();
+		if (pos.y <= e) {
+			mParticles[i].velocity *= -1;
+		}
+    }
 }
 
 void MASS_SPRING_SYSTEM::adjustVelocityDueToCollisionConstraint_LargeSphere(float time_step)
@@ -88,6 +130,20 @@ void MASS_SPRING_SYSTEM::adjustVelocityDueToCollisionConstraint_LargeSphere(floa
     float large_radius = 100.0;
     float small_radius = 5.0;
     float e = 0.05;
+
+	for (int i = 0; i < m_CurParticles; ++i ) {
+		Vector3 pos = mParticles[i].snode->getPosition();
+		float R = large_radius + small_radius + 0.05;
+    
+		Vector3 dir = -pos;
+		dir.normalise();
+		Vector3 vec = mParticles[i].velocity;
+		Real innerProduct = vec.dotProduct(dir);
+		if (dir.length() < R && innerProduct > 0) {
+			dir.normalise();
+			mParticles[i].velocity -= innerProduct * dir * time_step;
+		}
+	}
 }
 
 void MASS_SPRING_SYSTEM::adjustVelocityDueToCollisionConstraint(float time_step)
