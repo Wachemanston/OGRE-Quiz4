@@ -82,14 +82,13 @@ void BasicTutorial_00::setObjPositions(
     float r0 = 50.0; // radius of the first circle
     float dr = 12.0; // delta distance
     float h = 100.0; // height
+	int index = 0;
     for (int j = 0; j < numCircles; ++j) {
         float r = r0 + dr*j;
         for (int i = 0; i < numSamples; ++i) {
             float a = i/(float) numSamples*3.14*2.0;
-            //
-            //
-            //mSceneNode[index]->setPosition(x, y, z);
-
+            mSceneNode[index]->setPosition(r * cos(a), h, r * sin(a));
+			index++;
         }
     }
 }
@@ -157,42 +156,42 @@ void BasicTutorial_00::createSpace()
     m_NumCircles = 15;
     mNumSpheres = m_NumSamples*m_NumCircles;
     for (int i = 0; i < mNumSpheres; ++i ) {
-    int index = i;
-    float x = (rand()%10000)/10000.0;
-    float z = (rand()%10000)/10000.0;
-    float spaceSizeX = 400.0;
-    float spaceSizeZ = 400.0;
+		int index = i;
+		float x = (rand()%10000)/10000.0;
+		float z = (rand()%10000)/10000.0;
+		float spaceSizeX = 400.0;
+		float spaceSizeZ = 400.0;
 
-    x = (1-2*x)*spaceSizeX;
-    z = (1-2*z)*spaceSizeZ;
+		x = (1-2*x)*spaceSizeX;
+		z = (1-2*z)*spaceSizeZ;
 
         genNameUsingIndex("R1", index, name_en);
-    genNameUsingIndex("S1", index, name_sn);
-    mEntity[index] = mSceneMgr
-		->createEntity( name_en, "sphere.mesh" );
+		genNameUsingIndex("S1", index, name_sn);
+		mEntity[index] = mSceneMgr
+			->createEntity( name_en, "sphere.mesh" );
 
-    switch(rand()%3) {
-    case 0:
-        mEntity[index]->setMaterialName("Examples/red");
-        break;
-    case 1:
-        mEntity[index]->setMaterialName("Examples/green");
+		switch(rand()%3) {
+		case 0:
+			mEntity[index]->setMaterialName("Examples/red");
+			break;
+		case 1:
+			mEntity[index]->setMaterialName("Examples/green");
 
-        break;
-    case 2:
-        mEntity[index]->setMaterialName("Examples/blue");
+			break;
+		case 2:
+			mEntity[index]->setMaterialName("Examples/blue");
 
-        break;
-    }
+			break;
+		}
 
-    mSceneNode[index] = mSceneMgr
-		->getRootSceneNode()
-		->createChildSceneNode( 
-		name_sn, Vector3( x, 0, z ) ); 
+		mSceneNode[index] = mSceneMgr
+			->getRootSceneNode()
+			->createChildSceneNode( 
+			name_sn, Vector3( x, 0, z ) ); 
 
-    float scale = mSmallSphereRadius*0.01;
-    mSceneNode[index]->scale(scale, scale, scale);
-    mSceneNode[index]->attachObject(mEntity[index]);
+		float scale = mSmallSphereRadius*0.01;
+		mSceneNode[index]->scale(scale, scale, scale);
+		mSceneNode[index]->attachObject(mEntity[index]);
     }
     reset();
     

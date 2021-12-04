@@ -57,7 +57,7 @@ bool BaseApplication::configure(void)
     {
         // If returned true, user clicked OK so initialise
         // Here we choose to let the system create a default rendering window by passing 'true'
-        mWindow = mRoot->initialise(true, "NCTU. 3D Game Programming. Student Name: XYZ. ID:0123456789");
+        mWindow = mRoot->initialise(true, "NCTU. 3D Game Programming. Student Name: Yu-Shu Li. ID:310552024");
 
         return true;
     }

@@ -6,12 +6,12 @@
 /*!
 \brief 3D Game Programming
 \n
-My Name: AA BB CC
+My Name: Yu-Shu Li
 \n
-My ID: 0123456789
+My ID: 310552024
 \n
-My Email: aaa@cs.nctu.edu.tw
-\n Date: 2017/09/24
+My Email: yushuli.cs10@nycu.edu.tw
+\n Date: 2021/12/04
 
 This is an assignment of 3D Game Programming
 
